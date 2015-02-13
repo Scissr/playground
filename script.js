@@ -14,7 +14,7 @@ require(['./scissr/main'], function(scissr){
     $(document).on('keydown', '#contentbox', function(e) { 
     var keyCode = e.keyCode || e.which; 
 
-    if (keyCode == 9) {
+    if (keyCode == 9 || keyCode == 13) {
 
       e.preventDefault();
       go();
