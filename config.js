@@ -2,7 +2,7 @@
 
 requirejs.config({
 	nodeRequire: require,
-    baseUrl: 'scissr',
+    baseUrl: './playground/scissr',
     paths: {
         'parser': './core/scissr-parser',
         'generator': './core/scissr-generator',
