@@ -1,5 +1,5 @@
 requirejs(['config']);
-require(['../scissr/main'], function(scissr){
+require(['./scissr/main'], function(scissr){
 
 	function buildErrorMessage(e) {
 

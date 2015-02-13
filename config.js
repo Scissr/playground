@@ -6,7 +6,7 @@ requirejs.config({
     paths: {
         'parser': './core/scissr-parser',
         'generator': './core/scissr-generator',
-        'scissr': './main',
+        'scissr': 'main',
         'dictionary':'./types/dictionary.json',
         'text': '../text'
 
