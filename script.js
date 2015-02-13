@@ -1,25 +1,24 @@
-require(['scissr-parser', 'generators/json', 'config'], function(scissrParser,jsonGenerator, config){
+requirejs(['config']);
+require(['../scissr/main'], function(scissr){
 
 	function buildErrorMessage(e) {
+
+    if (typeof e === "string") {
+      return e;
+    }
+
     return e.line !== undefined && e.column !== undefined
       ? "Line " + e.line + ", column " + e.column + ": " + e.message
       : e.message;
   }
-
-
-	// $(document).on('keydown', '#contentbox', function(e) { 
-	// 	var keyCode = e.keyCode || e.which; 
-
-	// 	if (keyCode == 9) { 
-	// 	  e.preventDefault(); 
-	// 	  go();
-	// 	} 
-	// });
-
-    $(document).on('keyup', '#contentbox', function(e) { 
+    $(document).on('keydown', '#contentbox', function(e) { 
     var keyCode = e.keyCode || e.which; 
 
+    if (keyCode == 9) {
+
+      e.preventDefault();
       go();
+    }
   
   });
 
@@ -30,9 +29,9 @@ require(['scissr-parser', 'generators/json', 'config'], function(scissrParser,js
 	  var output;
 	  try {
 
-    var scissr = new scissrParser(config);
-	   	var tree = scissr.parse(input);
-      output = JSON.parse(jsonGenerator.generate(tree, config));
+  
+	   	var tree = scissr.transform(input);
+      output = JSON.parse(tree);
 	  }
 	  catch(err) {
 	   	output = buildErrorMessage(err);

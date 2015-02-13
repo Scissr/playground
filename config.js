@@ -1,26 +1,14 @@
-define([
-	'types/base', 
-	'types/fname',
-	'types/age'
-	], 
-	function(baseTypes, fname, age){
-		var types = baseTypes.concat([fname,age]);
+//requirejs(['config']);
 
-		function getType(name){
-			for (var i = 0; i < types.length; i++) {
-				if (name == types[i].name) {
-					return types[i];
-				}
-			}
+requirejs.config({
+	nodeRequire: require,
+    baseUrl: 'scissr',
+    paths: {
+        'parser': './core/scissr-parser',
+        'generator': './core/scissr-generator',
+        'scissr': './main',
+        'dictionary':'./types/dictionary.json',
+        'text': '../text'
 
-			return undefined;
-		}
-
-		return {
-			types: types,
-			getType: getType
-		}
-	}
-);
-
-
+    }
+});

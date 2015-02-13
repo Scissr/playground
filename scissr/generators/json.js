@@ -1,8 +1,8 @@
+//if (typeof define !== 'function') { var define = require('amdefine')(module) }
 
-
-if (typeof define !== 'function') { var define = require('amdefine')(module) }
-	define([], function(){
-
+define(function(){
+	
+	var generator = function(tree, configuration){
 		var openCurlBrace = "{",
 		closeCurlBrace = "}",
 		openBlockBrace = "[",
@@ -13,10 +13,11 @@ if (typeof define !== 'function') { var define = require('amdefine')(module) }
 		space = " ",
 		indentCount = 0;
 
-		var config;
+		
 
 		function resolveValue(typeName){
-			var resolver = config.getType(typeName);
+
+			var resolver = configuration.types[typeName];
 
 			var value = typeName;
 
@@ -27,10 +28,7 @@ if (typeof define !== 'function') { var define = require('amdefine')(module) }
 			return value;
 		}
 
-		function generate(tree, settings){
-
-			config = settings;
-
+		function generate(){
 
 			var output = writeObject(tree.nodes);
 
@@ -40,7 +38,7 @@ if (typeof define !== 'function') { var define = require('amdefine')(module) }
 		function needQuotes(type){
 			return (type == "string" || type == "date");
 		}
-		
+
 
 		function writeObject(nodes){
 			var output = "";
@@ -63,7 +61,7 @@ if (typeof define !== 'function') { var define = require('amdefine')(module) }
 						output += openBlockBrace;
 
 						for (var i = 1; i <= node.count; i++) {
-							
+
 							if (node.baseType == "object") {
 								output += writeObject(node.nodes);
 							}
@@ -84,9 +82,9 @@ if (typeof define !== 'function') { var define = require('amdefine')(module) }
 						output += closeBlockBrace
 					}
 					else{
-						
+
 						output += writeObject(node.nodes);
-						
+
 					}
 
 				}
@@ -99,21 +97,26 @@ if (typeof define !== 'function') { var define = require('amdefine')(module) }
 					output += comma;
 				}
 
-				
+
 
 			}
-			
+
 			output += closeCurlBrace;
 
-		return output;
+			return output;
 			//var json =  JSON.parse(output);
 
 			//return JSON.stringify(json,null,4);
 		}
 
-
 		return {
 			generate: generate
-		}
-	});
+		};
+	};
+
+
+	return {
+		generator: generator
+	}
+});
 
