@@ -8,7 +8,8 @@ define(function (require) {
 	};
 
 	var generators = {
-		json: require('generators/json')
+		json: require('generators/json'),
+		xml: require('generators/xml')
 	};
 	return {
 

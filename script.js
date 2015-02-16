@@ -1,5 +1,16 @@
-requirejs(['config']);
-require(['./scissr/main'], function(scissr){
+//requirejs(['config']);
+
+requirejs.config({
+  nodeRequire: require,
+    baseUrl: 'scissr',
+    // paths: {
+    //     'scissr': 'scissr'
+    // }
+});
+
+
+require(['scissr'], function(scissr){
+var $output = $("#code");
 
 	function buildErrorMessage(e) {
 
@@ -14,7 +25,7 @@ require(['./scissr/main'], function(scissr){
     $(document).on('keydown', '#contentbox', function(e) { 
     var keyCode = e.keyCode || e.which; 
 
-    if (keyCode == 9 || keyCode == 13) {
+    if (keyCode == 9) {
 
       e.preventDefault();
       go();
@@ -29,33 +40,70 @@ require(['./scissr/main'], function(scissr){
 	  var output;
 	  try {
 
-  
-	   	var tree = scissr.transform(input);
-      output = JSON.parse(tree);
+ 
+	   	var response = scissr.transform(input);
+
+      console.log(response);
+
+      renderOutput(response);
+      
 	  }
 	  catch(err) {
-	   	output = buildErrorMessage(err);
+	   	console.log(err.message);
+      $output.html(err.message);
 	  }
-	    showTree(output);
+	  //  showTree(output);
 	}
 
-  function format(obj) {
+  function format(obj, mode) {
     var $this = $(obj),
         $code = $this.html(),
         $unescaped = $('<div/>').html($code).text();
     $this.empty();
-    CodeMirror(obj, {
-      value: $unescaped,
-      mode: 'javascript',
+    CodeMirror.fromTextArea(document.getElementById("output"), {
+      //value: $unescaped,
+      mode: mode,
       lineNumbers: !$this.is('.inline'),
-      readOnly: true
+     // readOnly: true
     });
   }
 
-  function showTree(tree) {
-    var value = JSON.stringify(tree, null, "\t");
-    var $jsontree = $("#jsontree");
-    $jsontree.html(value);
-    format($jsontree[0]);
+  function resolveFormat(response){
+    var type = response.header.generator;
+    var obj = {};
+    var content = response.body;
+
+    if (type == "json") {
+      content = vkbeautify.json(content,4);
+      obj.mode = "javascript"
+    }
+    if (type == "xml") {
+      obj.mode = "text/html"
+      content = vkbeautify.xml(content,4);
+    }
+
+    obj.body = content;
+
+    return obj;
   }
+
+  function renderOutput(response){
+
+    var obj = resolveFormat(response);
+
+  //  debugger;//
+    
+    $output.html("");
+
+   var myCodeMirror = CodeMirror($output[0], {
+  value: obj.body,
+  indentWithTabs:true,
+  mode:  obj.mode
+});
+
+
+
+  }
+
+  
 });
